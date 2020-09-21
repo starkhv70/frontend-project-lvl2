@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import fs from 'fs';
 
 const formatStr = (statusStr, key, value) => `  ${statusStr} ${key}: ${value}`;
 
@@ -22,4 +23,10 @@ const parser = (firstObj, secondObj) => {
   return `{\n${result.join('\n')}\n}`;
 };
 
-export default parser;
+const gendiff = (filePath1, filePath2) => {
+  const json1 = JSON.parse(fs.readFileSync(filePath1));
+  const json2 = JSON.parse(fs.readFileSync(filePath2));
+  console.log(parser(json1, json2));
+};
+
+export default gendiff;
