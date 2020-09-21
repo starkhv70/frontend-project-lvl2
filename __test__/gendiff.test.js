@@ -13,15 +13,7 @@ test('parser', () => {
     verbose: true,
     host: 'hexlet.io',
   };
-  const result = `{
-    - follow: false
-      host: hexlet.io
-    - proxy: 123.234.53.22
-    - timeout: 50
-    + timeout: 20
-    + verbose: true
-  }`;
+  const result = '{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: true\n}';
 
   expect(parser(json1, json2)).toEqual(result);
-  expect(parser({}, {})).toEqual({});
 });
