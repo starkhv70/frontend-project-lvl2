@@ -12,3 +12,7 @@
 ```sh
 make install
 ```
+
+## Пример работы с плоскими json файлами
+
+[![asciicast](https://asciinema.org/a/EvPGJZYLW3iQzudidw9QZMAx9.svg)](https://asciinema.org/a/EvPGJZYLW3iQzudidw9QZMAx9)
