@@ -1,5 +1,7 @@
-install:
-	npm install
+install: install-deps
+
+install-deps:
+	npm ci
 
 publish:
 	npm publish --dry-run
@@ -9,3 +11,7 @@ lint:
 
 test:
 	npm test
+
+test-coverage:
+	npm test -- --coverage --coverageProvider=v8
+
