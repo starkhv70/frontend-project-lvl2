@@ -1,19 +1,20 @@
+/* eslint-disable no-underscore-dangle */
+
 import { test, expect } from '@jest/globals';
-import parser from '../src/gendiff.js';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
+import gendiff from '../src/gendiff.js';
 
-test('parser', () => {
-  const json1 = {
-    host: 'hexlet.io',
-    timeout: 50,
-    proxy: '123.234.53.22',
-    follow: false,
-  };
-  const json2 = {
-    timeout: 20,
-    verbose: true,
-    host: 'hexlet.io',
-  };
-  const result = '{\n  - follow: false\n    host: hexlet.io\n  - proxy: 123.234.53.22\n  - timeout: 50\n  + timeout: 20\n  + verbose: true\n}';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-  expect(parser(json1, json2)).toEqual(result);
+const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
+
+test('gendiff', () => {
+  const filepath1 = getFixturePath('file1.json');
+  const filepath2 = getFixturePath('file2.json');
+  const result = readFile('result.txt');
+  expect(gendiff(filepath1, filepath2)).toEqual(result);
 });

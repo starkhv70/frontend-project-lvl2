@@ -8,16 +8,14 @@ const parser = (firstObj, secondObj) => {
   const result = keys.reduce((acc, key) => {
     const firstKeyExists = _.has(firstObj, key);
     const secondKeyExists = _.has(secondObj, key);
-    const firstValue = firstObj[key];
-    const secondValue = secondObj[key];
 
     if (firstKeyExists && secondKeyExists) {
-      if (firstValue === secondValue) {
-        return [...acc, formatStr(' ', key, firstValue)];
+      if (firstObj[key] === secondObj[key]) {
+        return [...acc, formatStr(' ', key, firstObj[key])];
       }
-      return [...acc, formatStr('-', key, firstValue), formatStr('+', key, secondValue)];
+      return [...acc, formatStr('-', key, firstObj[key]), formatStr('+', key, secondObj[key])];
     }
-    return firstKeyExists ? [...acc, formatStr('-', key, firstValue)] : [...acc, formatStr('+', key, secondValue)];
+    return firstKeyExists ? [...acc, formatStr('-', key, firstObj[key])] : [...acc, formatStr('+', key, secondObj[key])];
   }, []);
 
   return `{\n${result.join('\n')}\n}`;

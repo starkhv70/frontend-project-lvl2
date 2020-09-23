@@ -7,6 +7,10 @@
   "bin": {
     "gendiff": "bin/gendiff.js"
   },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
   "scripts": {
     "test": "npx -n --experimental-vm-modules jest"
   },
