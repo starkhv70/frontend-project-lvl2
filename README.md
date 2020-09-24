@@ -16,3 +16,7 @@ make install
 ## Пример работы с плоскими json файлами
 
 [![asciicast](https://asciinema.org/a/EvPGJZYLW3iQzudidw9QZMAx9.svg)](https://asciinema.org/a/EvPGJZYLW3iQzudidw9QZMAx9)
+
+## Пример работы с плоскими yaml файлами
+
+[![asciicast](https://asciinema.org/a/4m5PtgoufR31mBiKyHTQB0ulW.svg)](https://asciinema.org/a/4m5PtgoufR31mBiKyHTQB0ulW)

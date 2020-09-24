@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import fs from 'fs';
+import parse from './parsers.js';
 
 const formatStr = (statusStr, key, value) => `  ${statusStr} ${key}: ${value}`;
 
-const parser = (firstObj, secondObj) => {
+const compare = (firstObj, secondObj) => {
   const keys = _.union(Object.keys(firstObj), Object.keys(secondObj)).sort();
   const result = keys.reduce((acc, key) => {
     const firstKeyExists = _.has(firstObj, key);
@@ -22,9 +22,9 @@ const parser = (firstObj, secondObj) => {
 };
 
 const gendiff = (filePath1, filePath2) => {
-  const json1 = JSON.parse(fs.readFileSync(filePath1));
-  const json2 = JSON.parse(fs.readFileSync(filePath2));
-  return parser(json1, json2);
+  const obj1 = parse(filePath1);
+  const obj2 = parse(filePath2);
+  return compare(obj1, obj2);
 };
 
 export default gendiff;
