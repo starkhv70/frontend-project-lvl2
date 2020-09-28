@@ -1,5 +1,6 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
+import ini from 'ini';
 import path from 'path';
 
 export default (filepath) => {
@@ -10,6 +11,8 @@ export default (filepath) => {
       return JSON.parse(data);
     case '.yml':
       return yaml.safeLoad(data);
+    case '.ini':
+      return ini.parse(data);
     default:
       throw new Error(`Unknown file extension: '${format}'!`);
   }

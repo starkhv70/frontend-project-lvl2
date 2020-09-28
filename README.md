@@ -1,4 +1,4 @@
-# Проект "Игры разума"
+# Проект "Вычислитель отличий"
 
 ## [![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/hexletguides.github.io/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about)
 
@@ -20,3 +20,7 @@ make install
 ## Пример работы с плоскими yaml файлами
 
 [![asciicast](https://asciinema.org/a/4m5PtgoufR31mBiKyHTQB0ulW.svg)](https://asciinema.org/a/4m5PtgoufR31mBiKyHTQB0ulW)
+
+## Пример работы с плоскими ini файлами
+
+[![asciicast](https://asciinema.org/a/Ddgkx3DYejsBbDG5MEx2SZ0Nd.svg)](https://asciinema.org/a/Ddgkx3DYejsBbDG5MEx2SZ0Nd)
