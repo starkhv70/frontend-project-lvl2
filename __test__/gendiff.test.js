@@ -8,10 +8,11 @@ import gendiff from '../src/gendiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const files = [['file1.json', 'file2.json', 'result.txt'],
-  ['file1.yml', 'file2.yml', 'result.txt'],
-  ['file1.ini', 'file2.ini', 'result.txt'],
-  ['fileNested1.json', 'fileNested2.json', 'resultNested.txt']];
+const files = [['fileNested1.json', 'fileNested2.json', 'resultNested.txt']];
+// const files = [['file1.json', 'file2.json', 'result.txt'],
+// ['file1.yml', 'file2.yml', 'result.txt'],
+// ['file1.ini', 'file2.ini', 'result.txt'],
+// ['fileNested1.json', 'fileNested2.json', 'resultNested.txt']];
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
