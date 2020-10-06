@@ -24,3 +24,7 @@ make install
 ## Пример работы с плоскими ini файлами
 
 [![asciicast](https://asciinema.org/a/Ddgkx3DYejsBbDG5MEx2SZ0Nd.svg)](https://asciinema.org/a/Ddgkx3DYejsBbDG5MEx2SZ0Nd)
+
+## Пример работы с json файлами с вложенными структурами
+
+[![asciicast](https://asciinema.org/a/aiy0TDo81QBZDLrZ35vnI8BHS.svg)](https://asciinema.org/a/aiy0TDo81QBZDLrZ35vnI8BHS)

@@ -16,14 +16,14 @@ const buildDiff = (obj1, obj2) => {
       if (obj1HasChild && obj2HasChild) {
         return { type: ' ', key, children: buildDiff(obj1[key], obj2[key]) };
       }
-      if (obj1[key] === obj2[key]) {
-        return { type: ' ', key, value: obj1[key] };
-      }
       if (obj1HasChild) {
         return [{ type: '-', key, children: buildDiff(obj1[key], obj1[key]) }, { type: '+', key, value: obj2[key] }];
       }
       if (obj2HasChild) {
         return [{ type: '-', key, value: obj1[key] }, { type: '+', key, children: buildDiff(obj2[key], obj2[key]) }];
+      }
+      if (obj1[key] === obj2[key]) {
+        return { type: ' ', key, value: obj1[key] };
       }
       return [{ type: '-', key, value: obj1[key] }, { type: '+', key, value: obj2[key] }];
     }
