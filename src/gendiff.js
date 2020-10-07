@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import parse from './parsers.js';
-
-const initialIndent = 2;
-const padding = 4;
+import getFormatter from './formatters/index.js';
 
 const buildDiff = (obj1, obj2) => {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
@@ -41,25 +39,12 @@ const buildDiff = (obj1, obj2) => {
   return result;
 };
 
-const generateOutputStr = (diff) => {
-  const formatStr = (indent, line) => `${' '.repeat(indent)}${line.type} ${line.key}: ${line.value}`;
-  const formatStrWithChildren = (indent, line, parseChildren) => {
-    const children = parseChildren(line.children, indent + padding);
-    const header = `${' '.repeat(indent)}${line.type} ${line.key}: {`;
-    const bottom = `${' '.repeat(indent)}  }`;
-    return [header, ...children, bottom];
-  };
-  const parseDiff = (lines, indent) => lines.flatMap((line) => (_.has(line, 'children') ? formatStrWithChildren(indent, line, parseDiff) : formatStr(indent, line)));
-
-  const result = parseDiff(diff, initialIndent);
-  return `{\n${result.join('\n')}\n}`;
-};
-
-const gendiff = (filePath1, filePath2) => {
+const gendiff = (filePath1, filePath2, formatType) => {
   const obj1 = parse(filePath1);
   const obj2 = parse(filePath2);
   const diff = buildDiff(obj1, obj2);
-  return generateOutputStr(diff);
+  const formatDiff = getFormatter(formatType);
+  return formatDiff(diff);
 };
 
 export default gendiff;
