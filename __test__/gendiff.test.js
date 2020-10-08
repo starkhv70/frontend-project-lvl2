@@ -11,7 +11,8 @@ const __dirname = path.dirname(__filename);
 const files = [['file1.json', 'file2.json', 'stylish', 'result.txt'],
   ['file1.yml', 'file2.yml', 'stylish', 'result.txt'],
   ['file1.ini', 'file2.ini', 'stylish', 'result.txt'],
-  ['fileNested1.json', 'fileNested2.json', 'stylish', 'resultNested.txt']];
+  ['fileNested1.json', 'fileNested2.json', 'stylish', 'resultNested.txt'],
+  ['fileNested1.json', 'fileNested2.json', 'plain', 'resultPlain.txt']];
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
