@@ -1,0 +1,159 @@
+[
+  {
+    "type": "unchange",
+    "name": "common",
+    "children": [
+      {
+        "type": "add",
+        "name": "follow",
+        "value": false
+      },
+      {
+        "type": "unchange",
+        "name": "setting1",
+        "value": "Value 1"
+      },
+      {
+        "type": "remove",
+        "name": "setting2",
+        "value": 200
+      },
+      {
+        "type": "update",
+        "name": "setting3",
+        "value": true,
+        "oldValue": true,
+        "children": [
+          {
+            "type": "unchange",
+            "name": "key",
+            "value": "value"
+          }
+        ]
+      },
+      {
+        "type": "add",
+        "name": "setting4",
+        "value": "blah blah"
+      },
+      {
+        "type": "add",
+        "name": "setting5",
+        "children": [
+          {
+            "type": "unchange",
+            "name": "key5",
+            "value": "value5"
+          }
+        ]
+      },
+      {
+        "type": "unchange",
+        "name": "setting6",
+        "children": [
+          {
+            "type": "unchange",
+            "name": "doge",
+            "children": [
+              {
+                "type": "update",
+                "name": "wow",
+                "value": "so much",
+                "oldValue": "too much"
+              }
+            ]
+          },
+          {
+            "type": "unchange",
+            "name": "key",
+            "value": "value"
+          },
+          {
+            "type": "add",
+            "name": "ops",
+            "value": "vops"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "unchange",
+    "name": "group1",
+    "children": [
+      {
+        "type": "update",
+        "name": "baz",
+        "value": "bars",
+        "oldValue": "bas"
+      },
+      {
+        "type": "unchange",
+        "name": "foo",
+        "value": "bar"
+      },
+      {
+        "type": "update",
+        "name": "nest",
+        "children": [
+          {
+            "type": "unchange",
+            "name": "key",
+            "value": "value"
+          }
+        ],
+        "value": "str"
+      }
+    ]
+  },
+  {
+    "type": "remove",
+    "name": "group2",
+    "children": [
+      {
+        "type": "unchange",
+        "name": "abc",
+        "value": 12345
+      },
+      {
+        "type": "unchange",
+        "name": "deep",
+        "children": [
+          {
+            "type": "unchange",
+            "name": "id",
+            "value": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "add",
+    "name": "group3",
+    "children": [
+      {
+        "type": "unchange",
+        "name": "deep",
+        "children": [
+          {
+            "type": "unchange",
+            "name": "id",
+            "children": [
+              {
+                "type": "unchange",
+                "name": "number",
+                "value": 45
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "unchange",
+        "name": "fee",
+        "value": 100500
+      }
+    ]
+  }
+]

@@ -41,10 +41,7 @@ const buildDiff = (obj1, obj2) => {
       }
       return { ...oldLine, ...newLine };
     }
-    if (keyInObj1) {
-      return buildLine('remove', key, obj1[key]);
-    }
-    return buildLine('add', key, obj2[key]);
+    return (keyInObj1) ? buildLine('remove', key, obj1[key]) : buildLine('add', key, obj2[key]);
   });
 };
 
