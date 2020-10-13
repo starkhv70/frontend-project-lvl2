@@ -2,18 +2,20 @@ import _ from 'lodash';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
 
+const hasChild = (obj) => _.isObject(obj) && !Array.isArray(obj);
+
 const buildLine = (type, name, value) => {
   const parseChildren = (child) => {
     const keys = Object.keys(child).sort();
     return keys.flatMap((key) => {
-      if (_.isObject(child[key])) {
+      if (hasChild(child[key])) {
         return { type: 'unchange', name: key, children: parseChildren(child[key]) };
       }
       return { type: 'unchange', name: key, value: child[key] };
     });
   };
 
-  if (_.isObject(value)) {
+  if (hasChild(value)) {
     return { type, name, children: parseChildren(value) };
   }
   return { type, name, value };
@@ -26,7 +28,7 @@ const buildDiff = (obj1, obj2) => {
     const keyInObj1 = _.has(obj1, key);
     const keyInObj2 = _.has(obj2, key);
     if (keyInObj1 && keyInObj2) {
-      if (_.isObject(obj1[key]) && _.isObject(obj2[key])) {
+      if (hasChild(obj1[key]) && hasChild(obj2[key])) {
         return { type: 'unchange', name: key, children: buildDiff(obj1[key], obj2[key]) };
       }
       if (obj1[key] === obj2[key]) {

@@ -28,3 +28,7 @@ make install
 ## Пример работы с json файлами с вложенными структурами
 
 [![asciicast](https://asciinema.org/a/aiy0TDo81QBZDLrZ35vnI8BHS.svg)](https://asciinema.org/a/aiy0TDo81QBZDLrZ35vnI8BHS)
+
+## Пример работы с json файлами с вложенными структурами, вывод в формате "plain"
+
+[![asciicast](https://asciinema.org/a/LXiRp0q7OU2d462qS86BzAowH.svg)](https://asciinema.org/a/LXiRp0q7OU2d462qS86BzAowH)
