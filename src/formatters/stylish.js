@@ -5,7 +5,7 @@ const padding = 4;
 
 const getSigh = (type) => {
   switch (type) {
-    case 'unchanged':
+    case 'unchange':
       return ' ';
     case 'add':
       return '+';
@@ -25,9 +25,30 @@ const formatStrWithChildren = (indent, line, parseChildren) => {
   return [header, ...children, bottom];
 };
 
+const expandUpdateLine = (diff) => diff.reduce((acc, line) => {
+  if (line.type === 'unchange' && _.has(line, 'children')) {
+    const newLine = _.cloneDeep(line);
+    newLine.children = expandUpdateLine(line.children);
+    return [...acc, newLine];
+  }
+  if (line.type === 'update') {
+    if (_.has(line, 'oldValue')) {
+      const { oldValue, ...addedLine } = line;
+      addedLine.type = 'add';
+      const removedLine = { type: 'remove', name: line.name, value: oldValue };
+      return [...acc, removedLine, addedLine];
+    }
+    const { children, ...addedLine } = line;
+    addedLine.type = 'add';
+    const removedLine = { type: 'remove', name: line.name, children };
+    return [...acc, removedLine, addedLine];
+  }
+  return [...acc, line];
+}, []);
+
 export default (diff) => {
   const parseDiff = (lines, indent) => lines.flatMap((line) => (_.has(line, 'children') ? formatStrWithChildren(indent, line, parseDiff) : formatStr(indent, line)));
 
-  const result = parseDiff(diff, initialIndent);
+  const result = parseDiff(expandUpdateLine(diff), initialIndent);
   return `{\n${result.join('\n')}\n}`;
 };
