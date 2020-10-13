@@ -27,9 +27,9 @@ const formatStrWithChildren = (indent, line, parseChildren) => {
 
 const expandUpdateLine = (diff) => diff.reduce((acc, line) => {
   if (line.type === 'unchange' && _.has(line, 'children')) {
-    const newLine = _.cloneDeep(line);
-    newLine.children = expandUpdateLine(line.children);
-    return [...acc, newLine];
+    const unchangedLine = { ...line };
+    unchangedLine.children = expandUpdateLine(line.children);
+    return [...acc, unchangedLine];
   }
   if (line.type === 'update') {
     if (_.has(line, 'oldValue')) {
