@@ -49,6 +49,7 @@ const expandUpdateLine = (diff) => diff.reduce((acc, line) => {
 export default (diff) => {
   const parseDiff = (lines, indent) => lines.flatMap((line) => (_.has(line, 'children') ? formatStrWithChildren(indent, line, parseDiff) : formatStr(indent, line)));
 
-  const result = parseDiff(expandUpdateLine(diff), initialIndent);
+  const expandedDiff = expandUpdateLine(diff);
+  const result = parseDiff(expandedDiff, initialIndent);
   return `{\n${result.join('\n')}\n}`;
 };

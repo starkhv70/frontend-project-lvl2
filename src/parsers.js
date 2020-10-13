@@ -3,9 +3,15 @@ import yaml from 'js-yaml';
 import ini from 'ini';
 import path from 'path';
 
-export default (filepath) => {
-  const format = path.extname(filepath);
-  const data = fs.readFileSync(filepath, 'utf-8');
+const readFile = (filePath) => {
+  const fullPath = path.resolve(filePath, process.cwd());
+  const data = fs.readFileSync(fullPath, 'utf-8');
+  return data;
+};
+
+export default (filePath) => {
+  const format = path.extname(filePath);
+  const data = readFile(filePath);
   switch (format) {
     case '.json':
       return JSON.parse(data);
