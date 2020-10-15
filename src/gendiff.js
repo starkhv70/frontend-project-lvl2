@@ -1,21 +1,21 @@
 import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
-
-const hasChild = (obj) => _.isObject(obj) && !Array.isArray(obj);
 
 const buildLine = (type, name, value) => {
   const parseChildren = (child) => {
     const keys = Object.keys(child).sort();
     return keys.flatMap((key) => {
-      if (hasChild(child[key])) {
+      if (_.isPlainObject(child[key])) {
         return { type: 'unchange', name: key, children: parseChildren(child[key]) };
       }
       return { type: 'unchange', name: key, value: child[key] };
     });
   };
 
-  if (hasChild(value)) {
+  if (_.isPlainObject(value)) {
     return { type, name, children: parseChildren(value) };
   }
   return { type, name, value };
@@ -28,7 +28,7 @@ const buildDiff = (obj1, obj2) => {
     const keyInObj1 = _.has(obj1, key);
     const keyInObj2 = _.has(obj2, key);
     if (keyInObj1 && keyInObj2) {
-      if (hasChild(obj1[key]) && hasChild(obj2[key])) {
+      if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
         return { type: 'unchange', name: key, children: buildDiff(obj1[key], obj2[key]) };
       }
       if (obj1[key] === obj2[key]) {
@@ -45,9 +45,17 @@ const buildDiff = (obj1, obj2) => {
   });
 };
 
+const ReadFile = (filePath) => {
+  const fileExtension = path.extname(filePath);
+  const data = fs.readFileSync(filePath, 'utf-8');
+  return [data, fileExtension.slice(1)];
+};
+
 const gendiff = (filePath1, filePath2, formatType) => {
-  const obj1 = parse(filePath1);
-  const obj2 = parse(filePath2);
+  const [data1, fileType1] = ReadFile(filePath1);
+  const [data2, fileType2] = ReadFile(filePath2);
+  const obj1 = parse(data1, fileType1);
+  const obj2 = parse(data2, fileType2);
   const diff = buildDiff(obj1, obj2);
   const formatDiff = getFormatter(formatType);
   return formatDiff(diff);
