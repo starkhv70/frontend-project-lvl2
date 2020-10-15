@@ -9,9 +9,9 @@ const buildLine = (type, name, value) => {
     const keys = Object.keys(child).sort();
     return keys.flatMap((key) => {
       if (_.isPlainObject(child[key])) {
-        return { type: 'unchange', name: key, children: parseChildren(child[key]) };
+        return { type: 'unchanged', name: key, children: parseChildren(child[key]) };
       }
-      return { type: 'unchange', name: key, value: child[key] };
+      return { type: 'unchanged', name: key, value: child[key] };
     });
   };
 
@@ -21,7 +21,7 @@ const buildLine = (type, name, value) => {
   return { type, name, value };
 };
 
-const buildDiff = (obj1, obj2) => {
+export const buildDiff = (obj1, obj2) => {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
 
   return keys.flatMap((key) => {
@@ -29,19 +29,19 @@ const buildDiff = (obj1, obj2) => {
     const keyInObj2 = _.has(obj2, key);
     if (keyInObj1 && keyInObj2) {
       if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
-        return { type: 'unchange', name: key, children: buildDiff(obj1[key], obj2[key]) };
+        return { type: 'unchanged', name: key, children: buildDiff(obj1[key], obj2[key]) };
       }
       if (obj1[key] === obj2[key]) {
-        return buildLine('unchange', key, obj1[key]);
+        return buildLine('unchanged', key, obj1[key]);
       }
-      const oldLine = buildLine('update', key, obj1[key]);
-      const newLine = buildLine('update', key, obj2[key]);
+      const oldLine = buildLine('updated', key, obj1[key]);
+      const newLine = buildLine('updated', key, obj2[key]);
       if (_.has(oldLine, 'value')) {
         oldLine.oldValue = oldLine.value;
       }
       return { ...oldLine, ...newLine };
     }
-    return (keyInObj1) ? buildLine('remove', key, obj1[key]) : buildLine('add', key, obj2[key]);
+    return (keyInObj1) ? buildLine('removed', key, obj1[key]) : buildLine('added', key, obj2[key]);
   });
 };
 
@@ -51,7 +51,7 @@ const ReadFile = (filePath) => {
   return [data, fileExtension.slice(1)];
 };
 
-const gendiff = (filePath1, filePath2, formatType) => {
+export const gendiff = (filePath1, filePath2, formatType) => {
   const [data1, fileType1] = ReadFile(filePath1);
   const [data2, fileType2] = ReadFile(filePath2);
   const obj1 = parse(data1, fileType1);

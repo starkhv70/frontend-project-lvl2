@@ -5,11 +5,11 @@ const padding = 4;
 
 const getSigh = (type) => {
   switch (type) {
-    case 'unchange':
+    case 'unchanged':
       return ' ';
-    case 'add':
+    case 'added':
       return '+';
-    case 'remove':
+    case 'removed':
       return '-';
     default:
       throw new Error(`Unknown  diff line type: '${type}'!`);
@@ -26,21 +26,21 @@ const formatStrWithChildren = (indent, line, parseChildren) => {
 };
 
 const expandUpdateLine = (diff) => diff.reduce((acc, line) => {
-  if (line.type === 'unchange' && _.has(line, 'children')) {
+  if (line.type === 'unchanged' && _.has(line, 'children')) {
     const unchangedLine = { ...line };
     unchangedLine.children = expandUpdateLine(line.children);
     return [...acc, unchangedLine];
   }
-  if (line.type === 'update') {
+  if (line.type === 'updated') {
     if (_.has(line, 'oldValue')) {
       const { oldValue, ...addedLine } = line;
-      addedLine.type = 'add';
-      const removedLine = { type: 'remove', name: line.name, value: oldValue };
+      addedLine.type = 'added';
+      const removedLine = { type: 'removed', name: line.name, value: oldValue };
       return [...acc, removedLine, addedLine];
     }
     const { children, ...addedLine } = line;
-    addedLine.type = 'add';
-    const removedLine = { type: 'remove', name: line.name, children };
+    addedLine.type = 'added';
+    const removedLine = { type: 'removed', name: line.name, children };
     return [...acc, removedLine, addedLine];
   }
   return [...acc, line];

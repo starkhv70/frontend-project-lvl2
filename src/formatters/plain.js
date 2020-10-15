@@ -3,7 +3,7 @@ import _ from 'lodash';
 const modifyLine = (line) => {
   const modifiedLine = { ...line };
   modifiedLine.value = (typeof (modifiedLine.value) === 'string') ? `'${modifiedLine.value}'` : modifiedLine.value;
-  if (line.type === 'update') {
+  if (line.type === 'updated') {
     modifiedLine.oldValue = (typeof (modifiedLine.oldValue) === 'string') ? `'${modifiedLine.oldValue}'` : modifiedLine.oldValue;
     modifiedLine.oldValue = (_.has(line, 'oldValue')) ? modifiedLine.oldValue : '[complex value]';
     modifiedLine.value = (_.has(line, 'children') && _.has(line, 'oldValue')) ? '[complex value]' : modifiedLine.value;
@@ -19,16 +19,16 @@ export default (diff) => {
     const outputLine = modifyLine(line);
 
     switch (line.type) {
-      case 'unchange':
+      case 'unchanged':
         if (_.has(line, 'children')) {
           return [...acc, parseDiff(line.children, newPath)].flat();
         }
         return acc;
-      case 'update':
+      case 'updated':
         return [...acc, `Property '${newPath}' was updated. From ${outputLine.oldValue} to ${outputLine.value}`];
-      case 'add':
+      case 'added':
         return [...acc, `Property '${newPath}' was added with value: ${outputLine.value}`];
-      case 'remove':
+      case 'removed':
         return [...acc, `Property '${newPath}' was removed`];
       default:
         throw new Error(`Unknown  diff line type: '${line.type}'!`);
