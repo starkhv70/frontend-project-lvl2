@@ -4,44 +4,26 @@ import path from 'path';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
 
-const buildLine = (type, name, value) => {
-  const parseChildren = (child) => {
-    const keys = Object.keys(child).sort();
-    return keys.flatMap((key) => {
-      if (_.isPlainObject(child[key])) {
-        return { type: 'unchanged', name: key, children: parseChildren(child[key]) };
-      }
-      return { type: 'unchanged', name: key, value: child[key] };
-    });
-  };
-
-  if (_.isPlainObject(value)) {
-    return { type, name, children: parseChildren(value) };
-  }
-  return { type, name, value };
-};
-
 export const buildDiff = (obj1, obj2) => {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
 
-  return keys.flatMap((key) => {
+  return keys.map((key) => {
     const keyInObj1 = _.has(obj1, key);
     const keyInObj2 = _.has(obj2, key);
-    if (keyInObj1 && keyInObj2) {
-      if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
-        return { type: 'unchanged', name: key, children: buildDiff(obj1[key], obj2[key]) };
-      }
-      if (obj1[key] === obj2[key]) {
-        return buildLine('unchanged', key, obj1[key]);
-      }
-      const oldLine = buildLine('updated', key, obj1[key]);
-      const newLine = buildLine('updated', key, obj2[key]);
-      if (_.has(oldLine, 'value')) {
-        oldLine.oldValue = oldLine.value;
-      }
-      return { ...oldLine, ...newLine };
+    if (keyInObj1 && !keyInObj2) return { type: 'removed', key, value: obj1[key] };
+    if (!keyInObj1 && keyInObj2) return { type: 'added', key, value: obj2[key] };
+
+    if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+      return { type: 'nested', key, children: buildDiff(obj1[key], obj2[key]) };
     }
-    return (keyInObj1) ? buildLine('removed', key, obj1[key]) : buildLine('added', key, obj2[key]);
+
+    if (!_.isEqual(obj1[key], obj2[key])) {
+      return {
+        type: 'updated', key, oldValue: obj1[key], value: obj2[key],
+      };
+    }
+
+    return { type: 'unchanged', key, value: obj1[key] };
   });
 };
 

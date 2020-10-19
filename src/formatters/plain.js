@@ -1,40 +1,39 @@
 import _ from 'lodash';
 
-const modifyLine = (line) => {
-  const modifiedLine = { ...line };
-  modifiedLine.value = (typeof (modifiedLine.value) === 'string') ? `'${modifiedLine.value}'` : modifiedLine.value;
-  if (line.type === 'updated') {
-    modifiedLine.oldValue = (typeof (modifiedLine.oldValue) === 'string') ? `'${modifiedLine.oldValue}'` : modifiedLine.oldValue;
-    modifiedLine.oldValue = (_.has(line, 'oldValue')) ? modifiedLine.oldValue : '[complex value]';
-    modifiedLine.value = (_.has(line, 'children') && _.has(line, 'oldValue')) ? '[complex value]' : modifiedLine.value;
-  } else {
-    modifiedLine.value = (_.has(line, 'children')) ? '[complex value]' : modifiedLine.value;
+const modifyValue = (value) => {
+  if (typeof (value) === 'string') {
+    return `'${value}'`;
   }
-  return modifiedLine;
+  if (_.isPlainObject(value)) {
+    return '[complex value]';
+  }
+  return value;
 };
 
-export default (diff) => {
-  const parseDiff = (lines, path = '') => lines.reduce((acc, line) => {
-    const newPath = (path.length === 0) ? line.name : `${path}.${line.name}`;
-    const outputLine = modifyLine(line);
+const render = (tree) => {
+  const parseDiff = (subtree, path = '') => subtree.reduce((acc, {
+    type, key, value, oldValue, children,
+  }) => {
+    const newPath = (path.length === 0) ? key : `${path}.${key}`;
 
-    switch (line.type) {
-      case 'unchanged':
-        if (_.has(line, 'children')) {
-          return [...acc, parseDiff(line.children, newPath)].flat();
-        }
-        return acc;
+    switch (type) {
+      case 'nested':
+        return [...acc, parseDiff(children, newPath)].flat();
       case 'updated':
-        return [...acc, `Property '${newPath}' was updated. From ${outputLine.oldValue} to ${outputLine.value}`];
+        return [...acc, `Property '${newPath}' was updated. From ${modifyValue(oldValue)} to ${modifyValue(value)}`];
       case 'added':
-        return [...acc, `Property '${newPath}' was added with value: ${outputLine.value}`];
+        return [...acc, `Property '${newPath}' was added with value: ${modifyValue(value)}`];
       case 'removed':
         return [...acc, `Property '${newPath}' was removed`];
+      case 'unchanged':
+        return acc;
       default:
-        throw new Error(`Unknown  diff line type: '${line.type}'!`);
+        throw new Error(`Unknown  diff line type: '${type}'!`);
     }
   }, []);
 
-  const result = parseDiff(diff);
+  const result = parseDiff(tree);
   return result.join('\n');
 };
+
+export default render;

@@ -29,41 +29,31 @@ test('buildiff', () => {
   const obj1 = { obj: { a: { c: 1, d: 2 }, b: 2, f: 'str' }, g: true };
   const obj2 = { obj: { a: 4, f: 'str', h: 2 }, g: false, j: { k: 'value' } };
   const result = [{
-    type: 'updated', name: 'g', value: false, oldValue: true,
+    type: 'updated', key: 'g', value: false, oldValue: true,
   },
-  { type: 'added', name: 'j', children: [{ name: 'k', type: 'unchanged', value: 'value' }] },
+  { type: 'added', key: 'j', value: { k: 'value' } },
   {
-    type: 'unchanged',
-    name: 'obj',
+    type: 'nested',
+    key: 'obj',
     children: [
       {
-        name: 'a',
+        key: 'a',
         type: 'updated',
         value: 4,
-        children: [
-          {
-            name: 'c',
-            type: 'unchanged',
-            value: 1,
-          },
-          {
-            name: 'd',
-            type: 'unchanged',
-            value: 2,
-          }],
+        oldValue: { c: 1, d: 2 },
       },
       {
-        name: 'b',
+        key: 'b',
         type: 'removed',
         value: 2,
       },
       {
-        name: 'f',
+        key: 'f',
         type: 'unchanged',
         value: 'str',
       },
       {
-        name: 'h',
+        key: 'h',
         type: 'added',
         value: 2,
       }],

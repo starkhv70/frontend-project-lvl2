@@ -5,6 +5,8 @@ const padding = 4;
 
 const getSigh = (type) => {
   switch (type) {
+    case 'nested':
+      return ' ';
     case 'unchanged':
       return ' ';
     case 'added':
@@ -16,40 +18,34 @@ const getSigh = (type) => {
   }
 };
 
-const formatStr = (indent, line) => `${' '.repeat(indent)}${getSigh(line.type)} ${line.name}: ${line.value}`;
-
-const formatStrWithChildren = (indent, line, parseChildren) => {
-  const children = parseChildren(line.children, indent + padding);
-  const header = `${' '.repeat(indent)}${getSigh(line.type)} ${line.name}: {`;
+const formatStr = (indent, {
+  type, key, value,
+}) => {
+  if (!_.isPlainObject(value)) {
+    return `${' '.repeat(indent)}${getSigh(type)} ${key}: ${value}`;
+  }
+  const header = `${' '.repeat(indent)}${getSigh(type)} ${key}: {`;
+  const nestedStr = _.flatMap(value, (subValue, subKey) => formatStr(indent + padding, { type: 'unchanged', key: subKey, value: subValue }));
   const bottom = `${' '.repeat(indent)}  }`;
-  return [header, ...children, bottom];
+  return [header, ...nestedStr, bottom];
 };
 
-const expandUpdateLine = (diff) => diff.reduce((acc, line) => {
-  if (line.type === 'unchanged' && _.has(line, 'children')) {
-    const unchangedLine = { ...line };
-    unchangedLine.children = expandUpdateLine(line.children);
-    return [...acc, unchangedLine];
-  }
-  if (line.type === 'updated') {
-    if (_.has(line, 'oldValue')) {
-      const { oldValue, ...addedLine } = line;
-      addedLine.type = 'added';
-      const removedLine = { type: 'removed', name: line.name, value: oldValue };
-      return [...acc, removedLine, addedLine];
+const render = (tree) => {
+  const renderSubtree = (subtree, indent) => subtree.flatMap(({
+    type, key, value, oldValue, children,
+  }) => {
+    if (type === 'nested') {
+      const header = `${' '.repeat(indent)}${getSigh(type)} ${key}: {`;
+      const nestedStr = renderSubtree(children, indent + padding);
+      const bottom = `${' '.repeat(indent)}  }`;
+      return [header, ...nestedStr, bottom];
     }
-    const { children, ...addedLine } = line;
-    addedLine.type = 'added';
-    const removedLine = { type: 'removed', name: line.name, children };
-    return [...acc, removedLine, addedLine];
-  }
-  return [...acc, line];
-}, []);
+    if (type === 'updated') return [formatStr(indent, { type: 'removed', key, value: oldValue }), formatStr(indent, { type: 'added', key, value })].flat();
+    return formatStr(indent, { type, key, value });
+  });
 
-export default (diff) => {
-  const parseDiff = (lines, indent) => lines.flatMap((line) => (_.has(line, 'children') ? formatStrWithChildren(indent, line, parseDiff) : formatStr(indent, line)));
-
-  const expandedDiff = expandUpdateLine(diff);
-  const result = parseDiff(expandedDiff, initialIndent);
+  const result = renderSubtree(tree, initialIndent);
   return `{\n${result.join('\n')}\n}`;
 };
+
+export default render;
