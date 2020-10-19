@@ -42,5 +42,3 @@ export const gendiff = (filePath1, filePath2, formatType) => {
   const formatDiff = getFormatter(formatType);
   return formatDiff(diff);
 };
-
-export default gendiff;
