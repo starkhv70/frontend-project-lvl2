@@ -1,51 +1,40 @@
 import _ from 'lodash';
 
-const initialIndent = 2;
-const padding = 4;
+const fixIndent = 2;
+const spaceForSign = 2;
+const padding = fixIndent + spaceForSign;
 
-const getSigh = (type) => {
-  switch (type) {
-    case 'nested':
-      return ' ';
-    case 'unchanged':
-      return ' ';
-    case 'added':
-      return '+';
-    case 'removed':
-      return '-';
-    default:
-      throw new Error(`Unknown  diff line type: '${type}'!`);
-  }
-};
-
-const formatStr = (indent, {
-  type, key, value,
-}) => {
-  if (!_.isPlainObject(value)) {
-    return `${' '.repeat(indent)}${getSigh(type)} ${key}: ${value}`;
-  }
-  const header = `${' '.repeat(indent)}${getSigh(type)} ${key}: {`;
-  const nestedStr = _.flatMap(value, (subValue, subKey) => formatStr(indent + padding, { type: 'unchanged', key: subKey, value: subValue }));
-  const bottom = `${' '.repeat(indent)}  }`;
-  return [header, ...nestedStr, bottom];
+const toString = (data, indent) => {
+  if (!_.isPlainObject(data)) return data;
+  const subStr = _.flatMap(data, (value, key) => `${' '.repeat(indent + padding)}  ${key}: ${toString(value, indent + padding)}`);
+  return `{\n${subStr.join('\n')}\n${' '.repeat(indent + spaceForSign)}}`;
 };
 
 const render = (tree) => {
-  const renderSubtree = (subtree, indent) => subtree.flatMap(({
-    type, key, value, oldValue, children,
-  }) => {
-    if (type === 'nested') {
-      const header = `${' '.repeat(indent)}${getSigh(type)} ${key}: {`;
-      const nestedStr = renderSubtree(children, indent + padding);
-      const bottom = `${' '.repeat(indent)}  }`;
-      return [header, ...nestedStr, bottom];
-    }
-    if (type === 'updated') return [formatStr(indent, { type: 'removed', key, value: oldValue }), formatStr(indent, { type: 'added', key, value })].flat();
-    return formatStr(indent, { type, key, value });
-  });
+  const renderSubtree = (subtree, indent) => {
+    const result = subtree.flatMap(({
+      type, key, value, oldValue, children,
+    }) => {
+      const indentStr = ' '.repeat(indent);
+      switch (type) {
+        case 'nested':
+          return `${indentStr}  ${key}: ${renderSubtree(children, indent + padding)}`;
+        case 'unchanged':
+          return `${indentStr}  ${key}: ${toString(value, indent)}`;
+        case 'updated':
+          return [`${indentStr}- ${key}: ${toString(oldValue, indent)}`, `${indentStr}+ ${key}: ${toString(value, indent)}`];
+        case 'added':
+          return `${indentStr}+ ${key}: ${toString(value, indent)}`;
+        case 'removed':
+          return `${indentStr}- ${key}: ${toString(value, indent)}`;
+        default:
+          throw new Error(`Unknown  diff line type: '${type}'!`);
+      }
+    });
+    return `{\n${result.join('\n')}\n${' '.repeat(indent - spaceForSign)}}`;
+  };
 
-  const result = renderSubtree(tree, initialIndent);
-  return `{\n${result.join('\n')}\n}`;
+  return renderSubtree(tree, fixIndent);
 };
 
 export default render;
