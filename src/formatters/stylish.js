@@ -1,40 +1,42 @@
 import _ from 'lodash';
 
-const fixIndent = 2;
+const defaultIndentsCount = 2;
 const spaceForSign = 2;
-const padding = fixIndent + spaceForSign;
+const padding = defaultIndentsCount + spaceForSign;
 
-const toString = (data, indent) => {
+const createIndent = (indentsCount) => ' '.repeat(indentsCount);
+
+const toString = (data, indentsCount) => {
   if (!_.isPlainObject(data)) return data;
-  const subStr = _.flatMap(data, (value, key) => `${' '.repeat(indent + padding)}  ${key}: ${toString(value, indent + padding)}`);
-  return `{\n${subStr.join('\n')}\n${' '.repeat(indent + spaceForSign)}}`;
+  const subStr = _.flatMap(data, (value, key) => `${createIndent(indentsCount + padding)}  ${key}: ${toString(value, indentsCount + padding)}`);
+  return `{\n${subStr.join('\n')}\n${createIndent(indentsCount + spaceForSign)}}`;
 };
 
 const render = (tree) => {
-  const renderSubtree = (subtree, indent) => {
+  const renderSubtree = (subtree, indentsCount) => {
     const result = subtree.flatMap(({
       type, key, value, oldValue, children,
     }) => {
-      const indentStr = ' '.repeat(indent);
+      const indent = createIndent(indentsCount);
       switch (type) {
         case 'nested':
-          return `${indentStr}  ${key}: ${renderSubtree(children, indent + padding)}`;
+          return `${indent}  ${key}: ${renderSubtree(children, indentsCount + padding)}`;
         case 'unchanged':
-          return `${indentStr}  ${key}: ${toString(value, indent)}`;
+          return `${indent}  ${key}: ${toString(value, indentsCount)}`;
         case 'updated':
-          return [`${indentStr}- ${key}: ${toString(oldValue, indent)}`, `${indentStr}+ ${key}: ${toString(value, indent)}`];
+          return [`${indent}- ${key}: ${toString(oldValue, indentsCount)}`, `${indent}+ ${key}: ${toString(value, indentsCount)}`];
         case 'added':
-          return `${indentStr}+ ${key}: ${toString(value, indent)}`;
+          return `${indent}+ ${key}: ${toString(value, indentsCount)}`;
         case 'removed':
-          return `${indentStr}- ${key}: ${toString(value, indent)}`;
+          return `${indent}- ${key}: ${toString(value, indentsCount)}`;
         default:
           throw new Error(`Unknown  diff line type: '${type}'!`);
       }
     });
-    return `{\n${result.join('\n')}\n${' '.repeat(indent - spaceForSign)}}`;
+    return `{\n${result.join('\n')}\n${' '.repeat(indentsCount - spaceForSign)}}`;
   };
 
-  return renderSubtree(tree, fixIndent);
+  return renderSubtree(tree, defaultIndentsCount);
 };
 
 export default render;
