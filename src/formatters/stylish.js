@@ -7,9 +7,15 @@ const padding = defaultIndentsCount + spaceForSign;
 const createIndent = (indentsCount) => ' '.repeat(indentsCount);
 
 const toString = (data, indentsCount) => {
-  if (!_.isPlainObject(data)) return data;
-  const subStr = _.flatMap(data, (value, key) => `${createIndent(indentsCount + padding)}  ${key}: ${toString(value, indentsCount + padding)}`);
-  return `{\n${subStr.join('\n')}\n${createIndent(indentsCount + spaceForSign)}}`;
+  if (Array.isArray(data)) {
+    const nestedLines = _.flatMap(data, (value) => `${createIndent(indentsCount + padding)}${toString(value, indentsCount + defaultIndentsCount)}`);
+    return `[\n${nestedLines.join('\n')}\n${createIndent(indentsCount + spaceForSign)}]`;
+  }
+  if (_.isPlainObject(data) && !(data === null)) {
+    const nestedLines = _.flatMap(data, (value, key) => `${createIndent(indentsCount + padding)}  ${key}: ${toString(value, indentsCount + padding)}`);
+    return `{\n${nestedLines.join('\n')}\n${createIndent(indentsCount + spaceForSign)}}`;
+  }
+  return data;
 };
 
 const render = (tree) => {

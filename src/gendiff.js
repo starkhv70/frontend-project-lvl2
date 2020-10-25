@@ -4,6 +4,8 @@ import path from 'path';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
 
+export const isObject = (value) => (_.isPlainObject(value) && !(value === null));
+
 export const buildDiff = (obj1, obj2) => {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
 
@@ -13,7 +15,7 @@ export const buildDiff = (obj1, obj2) => {
     if (keyInObj1 && !keyInObj2) return { type: 'removed', key, value: obj1[key] };
     if (!keyInObj1 && keyInObj2) return { type: 'added', key, value: obj2[key] };
 
-    if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
+    if (isObject(obj1[key]) && isObject(obj2[key])) {
       return { type: 'nested', key, children: buildDiff(obj1[key], obj2[key]) };
     }
 
