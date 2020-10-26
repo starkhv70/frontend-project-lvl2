@@ -4,8 +4,6 @@ import path from 'path';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
 
-export const isObject = (value) => (_.isPlainObject(value) && !(value === null));
-
 export const buildDiff = (obj1, obj2) => {
   const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
 
@@ -15,13 +13,13 @@ export const buildDiff = (obj1, obj2) => {
     if (keyInObj1 && !keyInObj2) return { type: 'removed', key, value: obj1[key] };
     if (!keyInObj1 && keyInObj2) return { type: 'added', key, value: obj2[key] };
 
-    if (isObject(obj1[key]) && isObject(obj2[key])) {
+    if (_.isPlainObject(obj1[key]) && _.isPlainObject(obj2[key])) {
       return { type: 'nested', key, children: buildDiff(obj1[key], obj2[key]) };
     }
 
     if (!_.isEqual(obj1[key], obj2[key])) {
       return {
-        type: 'updated', key, oldValue: obj1[key], value: obj2[key],
+        type: 'updated', key, oldValue: obj1[key], newValue: obj2[key],
       };
     }
 
@@ -29,15 +27,15 @@ export const buildDiff = (obj1, obj2) => {
   });
 };
 
-const ReadFile = (filePath) => {
+const readFile = (filePath) => {
   const fileExtension = path.extname(filePath);
   const data = fs.readFileSync(filePath, 'utf-8');
   return [data, fileExtension.slice(1)];
 };
 
 export const gendiff = (filePath1, filePath2, formatType) => {
-  const [data1, fileType1] = ReadFile(filePath1);
-  const [data2, fileType2] = ReadFile(filePath2);
+  const [data1, fileType1] = readFile(filePath1);
+  const [data2, fileType2] = readFile(filePath2);
   const obj1 = parse(data1, fileType1);
   const obj2 = parse(data2, fileType2);
   const diff = buildDiff(obj1, obj2);

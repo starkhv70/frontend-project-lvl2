@@ -1,48 +1,48 @@
 import _ from 'lodash';
 
-const defaultIndentsCount = 2;
+const indentStep = 2;
 const spaceForSign = 2;
-const padding = defaultIndentsCount + spaceForSign;
+const padding = indentStep + spaceForSign;
 
-const createIndent = (indentsCount) => ' '.repeat(indentsCount);
+const createIndent = (indentSize) => ' '.repeat(indentSize);
 
-const toString = (data, indentsCount) => {
+const toString = (data, indentSize) => {
   if (Array.isArray(data)) {
-    const nestedLines = _.flatMap(data, (value) => `${createIndent(indentsCount + padding)}${toString(value, indentsCount + defaultIndentsCount)}`);
-    return `[\n${nestedLines.join('\n')}\n${createIndent(indentsCount + spaceForSign)}]`;
+    const nestedLines = _.flatMap(data, (value) => `${createIndent(indentSize + padding)}  ${toString(value, indentSize + padding)}`);
+    return `[\n${nestedLines.join('\n')}\n${createIndent(indentSize + indentStep)}]`;
   }
-  if (_.isPlainObject(data) && !(data === null)) {
-    const nestedLines = _.flatMap(data, (value, key) => `${createIndent(indentsCount + padding)}  ${key}: ${toString(value, indentsCount + padding)}`);
-    return `{\n${nestedLines.join('\n')}\n${createIndent(indentsCount + spaceForSign)}}`;
+  if (_.isPlainObject(data)) {
+    const nestedLines = _.flatMap(data, (value, key) => `${createIndent(indentSize + padding)}  ${key}: ${toString(value, indentSize + padding)}`);
+    return `{\n${nestedLines.join('\n')}\n${createIndent(indentSize + indentStep)}}`;
   }
   return data;
 };
 
 const render = (tree) => {
-  const renderSubtree = (subtree, indentsCount) => {
+  const renderSubtree = (subtree, indentSize) => {
     const result = subtree.flatMap(({
-      type, key, value, oldValue, children,
+      type, key, value, oldValue, newValue, children,
     }) => {
-      const indent = createIndent(indentsCount);
+      const indent = createIndent(indentSize);
       switch (type) {
         case 'nested':
-          return `${indent}  ${key}: ${renderSubtree(children, indentsCount + padding)}`;
+          return `${indent}  ${key}: ${renderSubtree(children, indentSize + padding)}`;
         case 'unchanged':
-          return `${indent}  ${key}: ${toString(value, indentsCount)}`;
+          return `${indent}  ${key}: ${toString(value, indentSize)}`;
         case 'updated':
-          return [`${indent}- ${key}: ${toString(oldValue, indentsCount)}`, `${indent}+ ${key}: ${toString(value, indentsCount)}`];
+          return [`${indent}- ${key}: ${toString(oldValue, indentSize)}`, `${indent}+ ${key}: ${toString(newValue, indentSize)}`];
         case 'added':
-          return `${indent}+ ${key}: ${toString(value, indentsCount)}`;
+          return `${indent}+ ${key}: ${toString(value, indentSize)}`;
         case 'removed':
-          return `${indent}- ${key}: ${toString(value, indentsCount)}`;
+          return `${indent}- ${key}: ${toString(value, indentSize)}`;
         default:
           throw new Error(`Unknown  diff line type: '${type}'!`);
       }
     });
-    return `{\n${result.join('\n')}\n${' '.repeat(indentsCount - spaceForSign)}}`;
+    return `{\n${result.join('\n')}\n${createIndent(indentSize - indentStep)}}`;
   };
 
-  return renderSubtree(tree, defaultIndentsCount);
+  return renderSubtree(tree, indentStep);
 };
 
 export default render;

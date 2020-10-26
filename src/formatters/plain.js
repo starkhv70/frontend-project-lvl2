@@ -1,29 +1,29 @@
 import _ from 'lodash';
 
-const modifyValue = (value) => {
+const toString = (value) => {
   if (typeof (value) === 'string') {
     return `'${value}'`;
   }
-  if (_.isPlainObject(value)) {
+  if (_.isObject(value) && !_.isNull(value)) {
     return '[complex value]';
   }
   return value;
 };
 
 const render = (tree) => {
-  const parseDiff = (subtree, path = '') => subtree.filter(({ type }) => !(type === 'unchanged'))
+  const renderSubTree = (subtree, path = '') => subtree.filter(({ type }) => (type !== 'unchanged'))
     .flatMap(({
-      type, key, value, oldValue, children,
+      type, key, value, oldValue, newValue, children,
     }) => {
       const newPath = (path.length === 0) ? key : `${path}.${key}`;
 
       switch (type) {
         case 'nested':
-          return parseDiff(children, newPath);
+          return renderSubTree(children, newPath);
         case 'updated':
-          return `Property '${newPath}' was updated. From ${modifyValue(oldValue)} to ${modifyValue(value)}`;
+          return `Property '${newPath}' was updated. From ${toString(oldValue)} to ${toString(newValue)}`;
         case 'added':
-          return `Property '${newPath}' was added with value: ${modifyValue(value)}`;
+          return `Property '${newPath}' was added with value: ${toString(value)}`;
         case 'removed':
           return `Property '${newPath}' was removed`;
         default:
@@ -31,7 +31,7 @@ const render = (tree) => {
       }
     });
 
-  const result = parseDiff(tree);
+  const result = renderSubTree(tree);
   return result.join('\n');
 };
 

@@ -46,12 +46,12 @@
   - groupwithArray: {
         abc: 12345
         array: [
-          23
-          value
-          {
-              key1: value1
-              key2: value2
-          }
+            23
+            value
+            {
+                key1: value1
+                key2: value2
+            }
         ]
     }
 }

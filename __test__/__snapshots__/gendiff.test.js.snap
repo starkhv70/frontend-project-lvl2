@@ -25,7 +25,7 @@ exports[`Diff is build correctly 1`] = `
         \\"type\\": \\"updated\\",
         \\"key\\": \\"setting3\\",
         \\"oldValue\\": true,
-        \\"value\\": {
+        \\"newValue\\": {
           \\"key\\": \\"value\\"
         }
       },
@@ -53,7 +53,7 @@ exports[`Diff is build correctly 1`] = `
                 \\"type\\": \\"updated\\",
                 \\"key\\": \\"wow\\",
                 \\"oldValue\\": \\"too much\\",
-                \\"value\\": \\"so much\\"
+                \\"newValue\\": \\"so much\\"
               }
             ]
           },
@@ -79,7 +79,7 @@ exports[`Diff is build correctly 1`] = `
         \\"type\\": \\"updated\\",
         \\"key\\": \\"baz\\",
         \\"oldValue\\": \\"bas\\",
-        \\"value\\": \\"bars\\"
+        \\"newValue\\": \\"bars\\"
       },
       {
         \\"type\\": \\"unchanged\\",
@@ -92,7 +92,7 @@ exports[`Diff is build correctly 1`] = `
         \\"oldValue\\": {
           \\"key\\": \\"value\\"
         },
-        \\"value\\": \\"str\\"
+        \\"newValue\\": \\"str\\"
       }
     ]
   },
