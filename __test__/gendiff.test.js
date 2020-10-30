@@ -4,7 +4,8 @@ import { test, expect } from '@jest/globals';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
-import { gendiff, buildDiff } from '../src/gendiff.js';
+import gendiff from '../src/gendiff.js';
+import buildDiff from '../src/buildDiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
