@@ -6,6 +6,7 @@
 
 [![Node CI](https://github.com/starkhv70/frontend-project-lvl2/workflows/Node.js%20CI/badge.svg)](https://github.com/starkhv70/frontend-project-lvl2/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/a5ade5ebd8cbda4f7931/maintainability)](https://codeclimate.com/github/starkhv70/frontend-project-lvl2/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/a5ade5ebd8cbda4f7931/test_coverage)](https://codeclimate.com/github/starkhv70/frontend-project-lvl2/test_coverage)
 
 ## Setup
 
