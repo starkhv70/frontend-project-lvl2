@@ -10,7 +10,7 @@ const getData = (filePath) => {
   return parse(data, fileFormat);
 };
 
-const gendiff = (filePath1, filePath2, formatType) => {
+const gendiff = (filePath1, filePath2, formatType = 'stylish') => {
   const obj1 = getData(filePath1);
   const obj2 = getData(filePath2);
   const diff = buildDiff(obj1, obj2);

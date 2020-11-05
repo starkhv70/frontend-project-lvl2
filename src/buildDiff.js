@@ -1,9 +1,10 @@
 import _ from 'lodash';
 
 const buildDiff = (obj1, obj2) => {
-  const keys = _.union(Object.keys(obj1), Object.keys(obj2)).sort();
+  const keys = _.union(Object.keys(obj1), Object.keys(obj2));
+  const sortedKeys = _.sortBy(keys);
 
-  return keys.map((key) => {
+  return sortedKeys.map((key) => {
     const keyInObj1 = _.has(obj1, key);
     const keyInObj2 = _.has(obj2, key);
     if (keyInObj1 && !keyInObj2) return { type: 'removed', key, value: obj1[key] };

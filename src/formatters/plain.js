@@ -1,10 +1,10 @@
 import _ from 'lodash';
 
 const toString = (value) => {
-  if (typeof (value) === 'string') {
+  if (_.isString(value)) {
     return `'${value}'`;
   }
-  if (_.isObject(value) && !_.isNull(value)) {
+  if (_.isObject(value)) {
     return '[complex value]';
   }
   return value;

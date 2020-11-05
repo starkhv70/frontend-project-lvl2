@@ -1,8 +1,8 @@
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-export default (data, fileType) => {
-  switch (fileType) {
+export default (data, dataType) => {
+  switch (dataType) {
     case 'json':
       return JSON.parse(data);
     case 'yml':
@@ -10,6 +10,6 @@ export default (data, fileType) => {
     case 'ini':
       return ini.parse(data);
     default:
-      throw new Error(`Unknown file type: '${fileType}'!`);
+      throw new Error(`Unknown type of data: '${dataType}'!`);
   }
 };
