@@ -11,6 +11,8 @@ const files = [['file1.json', 'file2.json', 'stylish', 'expectedStylish.txt'],
   ['file1.ini', 'file2.ini', 'stylish', 'expectedStylish.txt'],
   ['file1WithArray.json', 'file2.json', 'stylish', 'expectedStylishWithArray.txt'],
   ['file1.json', 'file2.json', 'plain', 'expectedPlain.txt'],
+  ['file1.ini', 'file2.ini', 'plain', 'expectedPlain.txt'],
+  ['file1.ini', 'file2.ini', 'json', 'expected.json'],
   ['file1.json', 'file2.json', 'json', 'expected.json']];
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
