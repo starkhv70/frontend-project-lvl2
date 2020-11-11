@@ -114,5 +114,16 @@
         }
       }
     }
+  },
+  {
+    "type": "removed",
+    "key": "groupwithArray",
+    "value": {
+      "abc": 12345,
+      "array": [
+        23,
+        "value1"
+      ]
+    }
   }
 ]

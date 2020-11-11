@@ -43,4 +43,11 @@
             }
         }
     }
+  - groupwithArray: {
+        abc: 12345
+        array: [
+            23
+            value1
+        ]
+    }
 }
